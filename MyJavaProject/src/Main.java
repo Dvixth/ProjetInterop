@@ -8,53 +8,30 @@ import java.sql.Types;
 import org.h2.tools.SimpleResultSet;
 
 public class Main {
-    // Méthode getGaussianTable doit être déclarée comme public static
-    public static ResultSet getGaussianTable(Connection conn, Integer size) throws SQLException {
-        SimpleResultSet rs = new SimpleResultSet();
-        rs.addColumn("x", Types.INTEGER, 0, 0);
-        rs.addColumn("y", Types.INTEGER, 0, 0);
-        rs.addColumn("valeur", Types.DOUBLE, 0, 0);
 
-        int halfSize = size / 2;
-        for (int x = -halfSize; x <= halfSize; x++) {
-            for (int y = -halfSize; y <= halfSize; y++) {
-                double value = gaussianFunction(x, y);
-                rs.addRow(x, y, value);
-            }
-        }
-        return rs;
-    }
+    public static void exercice1(){
 
-    // Fonction gaussienne simple pour générer des valeurs
-    private static double gaussianFunction(int x, int y) {
-        double sigma = 1.0; // écart-type
-        double mean = 0.0; // moyenne
-        return (1.0 / (2 * Math.PI * sigma * sigma)) * Math.exp(-((x * x + y * y) / (2 * sigma * sigma)));
-    }
-
-    public static void main(String[] args) {
         String connUrl = "jdbc:h2:./h2database"; // URL de connexion à la base de données H2
         String username = "sa"; // Nom d'utilisateur
-        String password = ""; // Mot de passe (vide dans cet exemple)
+        String password = ""; // Mot de passe
 
-        // Bloc try-with-resources pour gérer automatiquement la fermeture de la connexion
         try (Connection conn = DriverManager.getConnection(connUrl, username, password)) {
             // Création de l'alias de fonction GAUSSIENNE
-            String createAliasSql = "CREATE ALIAS IF NOT EXISTS GAUSSIENNE FOR \"Main.getGaussianTable\"";
+            String creeAlias = "CREATE ALIAS IF NOT EXISTS GAUSSIENNE FOR \"Methode.getGaussianTable\"";
             try (Statement stmt = conn.createStatement()) {
-                stmt.execute(createAliasSql);
+                stmt.execute(creeAlias);
             }
 
             // Création manuelle de la table GAUSSIENNE
-            String createTableSql = "CREATE TABLE GAUSSIENNE (x INT, y INT, valeur DOUBLE)";
+            String creeTable = "CREATE TABLE GAUSSIENNE (x INT, y INT, valeur DOUBLE)";
             try (Statement stmt = conn.createStatement()) {
-                stmt.execute(createTableSql);
+                stmt.execute(creeTable);
             }
 
             // Utilisation de l'alias de fonction pour générer les données de la table virtuelle GAUSSIENNE
-            String insertDataSql = "INSERT INTO GAUSSIENNE (x, y, valeur) VALUES (?, ?, ?)";
-            try (PreparedStatement pstmt = conn.prepareStatement(insertDataSql)) {
-                ResultSet rs = getGaussianTable(conn, 5); // Taille k = 5
+            String insererDonnes = "INSERT INTO GAUSSIENNE (x, y, valeur) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(insererDonnes)) {
+                ResultSet rs = Methode.getGaussianTable(conn, 5); // Taille k = 5
                 while (rs.next()) {
                     pstmt.setInt(1, rs.getInt("x"));
                     pstmt.setInt(2, rs.getInt("y"));
@@ -77,5 +54,19 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void exercice2(){
+
+    }
+
+
+
+   
+    public static void main(String[] args) {
+
+        exercice1();
+
+       
     }
 }
