@@ -4,23 +4,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
-import org.h2.tools.SimpleResultSet;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Main {
 
-    public static void exercice1(){
-
-        String connexionUrl = "jdbc:h2:mem:exo2database"; // URL de connexion à la base de données H2 en mémoire
+    public static void main(String[] args) {
+        String connexionUrl = "jdbc:h2:mem:database"; // URL de connexion à la base de données H2 en mémoire
         String username = "sa"; // Nom d'utilisateur
         String password = ""; // Mot de passe
 
-
         try (Connection connexion = DriverManager.getConnection(connexionUrl, username, password)) {
+            exercice1(connexion);
+            exercice2(connexion);
+            exercice3(connexion);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void exercice1(Connection connexion) {
+        try {
             String creeAlias = "CREATE ALIAS IF NOT EXISTS GAUSSIENNE FOR \"Methode.getGaussianTable\"";
             try (Statement stmt = connexion.createStatement()) {
                 stmt.execute(creeAlias);
@@ -40,6 +42,7 @@ public class Main {
                     pstmt.executeUpdate();
                 }
             }
+
             String selectSql = "SELECT * FROM GAUSSIENNE";
             try (Statement stmt = connexion.createStatement();
                  ResultSet rs = stmt.executeQuery(selectSql)) {
@@ -55,28 +58,21 @@ public class Main {
         }
     }
 
-
-    public static void exercice2(){
-
-        String connexionUrl = "jdbc:h2:mem:exo2database"; // URL de connexion à la base de données H2 en mémoire
-        String username = "sa"; // Nom d'utilisateur
-        String password = ""; // Mot de passe        
-
-        try (Connection connexion = DriverManager.getConnection(connexionUrl, username, password)) {//Connection a la BD H2
-            String creeAlias = "CREATE ALIAS IF NOT EXISTS RGBIMAGE FOR \"Methode.getRGBImage\"";//Alias pour une fonction
+    public static void exercice2(Connection connexion) {
+        try {
+            String creeAlias = "CREATE ALIAS IF NOT EXISTS RGBIMAGE FOR \"Methode.getRGBImage\"";
             try (Statement stmt = connexion.createStatement()) {
                 stmt.execute(creeAlias);
             }
 
-            //Création de la table 
-            String creeTable = "CREATE TABLE RGBIMAGE (x INT, y INT, r INT, g INT, b INT)";//Creation de la table et des ses colonnes
+            String creeTable = "CREATE TABLE RGBIMAGE (x INT, y INT, r INT, g INT, b INT)";
             try (Statement stmt = connexion.createStatement()) {
                 stmt.execute(creeTable);
             }
 
-            String insererDonnes = "INSERT INTO RGBIMAGE (x, y, r, g, b) VALUES (?, ?, ?, ?, ?)"; //Insertion dans la table
+            String insererDonnes = "INSERT INTO RGBIMAGE (x, y, r, g, b) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connexion.prepareStatement(insererDonnes)) {
-                ResultSet rs = Methode.getRGBImage(); 
+                ResultSet rs = Methode.getRGBImage();
                 while (rs.next()) {
                     pstmt.setInt(1, rs.getInt("x"));
                     pstmt.setInt(2, rs.getInt("y"));
@@ -87,7 +83,7 @@ public class Main {
                 }
             }
 
-            String selectSql = "SELECT * FROM RGBIMAGE"; //Affichage de la table 
+            String selectSql = "SELECT * FROM RGBIMAGE";
             try (Statement stmt = connexion.createStatement();
                  ResultSet rs = stmt.executeQuery(selectSql)) {
                 while (rs.next()) {
@@ -102,31 +98,29 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    public static void exercice3(){
+    public static void exercice3(Connection connexion) {
+        try {
+            String createTableQuery = "CREATE TABLE UNEIMAGE AS SELECT * FROM RGBIMAGE";
+            try (Statement statement = connexion.createStatement()) {
+                statement.executeUpdate(createTableQuery);
+            }
 
-        String connexionUrl = "jdbc:h2:mem:exo3database"; // URL de connexion à la base de données H2 en mémoire
-        String username = "sa"; // Nom d'utilisateur
-        String password = ""; // Mot de passe        
-
-        try (Connection connexion = DriverManager.getConnection(connexionUrl, username, password)) {
-        Statement s = connexion.createStatement();
-        s.execute("CREATE TABLE UNEIMAGE AS SELECT * FROM RGBIMAGE(?)");
-        
-    
-        }catch (SQLException e) {
+            String selectSql = "SELECT * FROM UNEIMAGE";
+            try (Statement stmt = connexion.createStatement();
+                 ResultSet rs = stmt.executeQuery(selectSql)) {
+                while (rs.next()) {
+                    int x = rs.getInt("x");
+                    int y = rs.getInt("y");
+                    int r = rs.getInt("r");
+                    int g = rs.getInt("g");
+                    int b = rs.getInt("b");
+                    System.out.println("x: " + x + ", y: " + y + ", r :" + r + ", g: " + g + ", b: " + b);
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
-
-    public static void main(String[] args){
-
-        exercice2();
-
-    }
-
-
 }
