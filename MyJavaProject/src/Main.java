@@ -105,6 +105,23 @@ public class Main {
 
     }
 
+    public static void exercice3(){
+
+        String connexionUrl = "jdbc:h2:mem:exo3database"; // URL de connexion à la base de données H2 en mémoire
+        String username = "sa"; // Nom d'utilisateur
+        String password = ""; // Mot de passe        
+
+        try (Connection connexion = DriverManager.getConnection(connexionUrl, username, password)) {
+        Statement s = connexion.createStatement();
+        s.execute("CREATE TABLE UNEIMAGE AS SELECT * FROM RGBIMAGE(?)");
+        
+    
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args){
 
         exercice2();
