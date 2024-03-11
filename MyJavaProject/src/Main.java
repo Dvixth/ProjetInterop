@@ -13,7 +13,7 @@ public class Main {
         String password = ""; // Mot de passe
 
         try (Connection connexion = DriverManager.getConnection(connexionUrl, username, password)) {
-            exercice1(connexion);
+            //exercice1(connexion);
             exercice2(connexion);
             exercice3(connexion);
         } catch (SQLException e) {
@@ -82,19 +82,6 @@ public class Main {
                     pstmt.executeUpdate();
                 }
             }
-
-            String selectSql = "SELECT * FROM RGBIMAGE";
-            try (Statement stmt = connexion.createStatement();
-                 ResultSet rs = stmt.executeQuery(selectSql)) {
-                while (rs.next()) {
-                    int x = rs.getInt("x");
-                    int y = rs.getInt("y");
-                    int r = rs.getInt("r");
-                    int g = rs.getInt("g");
-                    int b = rs.getInt("b");
-                    System.out.println("x: " + x + ", y: " + y + ", r :" + r + ", g: " + g + ", b: " + b);
-                }
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,13 +89,13 @@ public class Main {
 
     public static void exercice3(Connection connexion) {
         try {
-            String createTableQuery = "CREATE TABLE UNEIMAGE AS SELECT * FROM RGBIMAGE";
+            String creeTable = "CREATE TABLE UNEIMAGE AS SELECT * FROM RGBIMAGE";
             try (Statement statement = connexion.createStatement()) {
-                statement.executeUpdate(createTableQuery);
+                statement.executeUpdate(creeTable);
             }
-
+    
             String selectSql = "SELECT * FROM UNEIMAGE";
-            try (Statement stmt = connexion.createStatement();
+            try (Statement stmt = connexion.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
                  ResultSet rs = stmt.executeQuery(selectSql)) {
                 while (rs.next()) {
                     int x = rs.getInt("x");
@@ -116,11 +103,29 @@ public class Main {
                     int r = rs.getInt("r");
                     int g = rs.getInt("g");
                     int b = rs.getInt("b");
-                    System.out.println("x: " + x + ", y: " + y + ", r :" + r + ", g: " + g + ", b: " + b);
+    
+                    int grayValue = (int) ((r * 0.3) + (g * 0.59) + (b * 0.11));
+
+                    rs.updateInt("r", grayValue);
+                    rs.updateInt("g", grayValue);
+                    rs.updateInt("b", grayValue);
+                    rs.updateRow(); 
+    
+                    String updateSql = "UPDATE UNEIMAGE SET r=?, g=?, b=? WHERE x=? AND y=?";
+                    try (PreparedStatement updateStmt = connexion.prepareStatement(updateSql)) {
+                        updateStmt.setInt(1, grayValue);
+                        updateStmt.setInt(2, grayValue);
+                        updateStmt.setInt(3, grayValue);
+                        updateStmt.setInt(4, x);
+                        updateStmt.setInt(5, y);
+                        updateStmt.executeUpdate();
+                    }
                 }
             }
+            System.out.println("Les valeurs RVB ont été mises à jour avec succès en niveaux de gris.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+        
 }
