@@ -1,9 +1,14 @@
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.imageio.ImageIO;
 
 public class Main {
 
@@ -13,7 +18,7 @@ public class Main {
         String password = ""; // Mot de passe
 
         try (Connection connexion = DriverManager.getConnection(connexionUrl, username, password)) {
-            //exercice1(connexion);
+            exercice1(connexion);
             exercice2(connexion);
             exercice3(connexion);
         } catch (SQLException e) {
@@ -120,12 +125,12 @@ public class Main {
                         updateStmt.setInt(5, y);
                         updateStmt.executeUpdate();
                     }
+
                 }
             }
-            System.out.println("Les valeurs RVB ont été mises à jour avec succès en niveaux de gris.");
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-        
+    }     
 }
