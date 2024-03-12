@@ -28,7 +28,7 @@ public class Main {
 
     public static void exercice1(Connection connexion) {
         try {
-            String creeAlias = "CREATE ALIAS IF NOT EXISTS GAUSSIENNE FOR \"Methode.getGaussianTable\"";
+            String creeAlias = "CREATE ALIAS IF NOT EXISTS GAUSSIENNE FOR \"Methodes.getGaussianTable\"";
             try (Statement stmt = connexion.createStatement()) {
                 stmt.execute(creeAlias);
             }
@@ -39,7 +39,7 @@ public class Main {
 
             String insererDonnes = "INSERT INTO GAUSSIENNE (x, y, valeur) VALUES (?, ?, ?)";
             try (PreparedStatement pstmt = connexion.prepareStatement(insererDonnes)) {
-                ResultSet rs = Methode.getGaussianTable(connexion, 5); // Taille k = 5
+                ResultSet rs = Methodes.getGaussianTable(connexion, 5); // Taille k = 5
                 while (rs.next()) {
                     pstmt.setInt(1, rs.getInt("x"));
                     pstmt.setInt(2, rs.getInt("y"));
@@ -65,7 +65,7 @@ public class Main {
 
     public static void exercice2(Connection connexion) {
         try {
-            String creeAlias = "CREATE ALIAS IF NOT EXISTS RGBIMAGE FOR \"Methode.getRGBImage\"";
+            String creeAlias = "CREATE ALIAS IF NOT EXISTS RGBIMAGE FOR \"Methodes.getRGBImage\"";
             try (Statement stmt = connexion.createStatement()) {
                 stmt.execute(creeAlias);
             }
@@ -77,7 +77,7 @@ public class Main {
 
             String insererDonnes = "INSERT INTO RGBIMAGE (x, y, r, g, b) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = connexion.prepareStatement(insererDonnes)) {
-                ResultSet rs = Methode.getRGBImage();
+                ResultSet rs = Methodes.getRGBImage();
                 while (rs.next()) {
                     pstmt.setInt(1, rs.getInt("x"));
                     pstmt.setInt(2, rs.getInt("y"));

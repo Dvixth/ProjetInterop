@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import org.h2.tools.SimpleResultSet;
 
-public class Methode {
+public class Methodes {
 
     //Méthode qui génère des valeurs 
     static double genererValeurs(int x, int y) {
@@ -28,7 +28,7 @@ public class Methode {
         int halfSize = size / 2;
         for (int x = -halfSize; x <= halfSize; x++) {
             for (int y = -halfSize; y <= halfSize; y++) {
-                double value = Methode.genererValeurs(x, y);
+                double value = Methodes.genererValeurs(x, y);
                 rs.addRow(x, y, value);
             }
         }
@@ -37,7 +37,7 @@ public class Methode {
 
     public static ResultSet getRGBImage(){
 
-        String path ="MyJavaProject/hand.jpg";
+        String path ="ProjetInterop/MyJavaProject/hand.jpg";
        
         SimpleResultSet rs = new SimpleResultSet();
         
