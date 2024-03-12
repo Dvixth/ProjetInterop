@@ -37,7 +37,7 @@ public class Methodes {
 
     public static ResultSet getRGBImage(){
 
-        String path ="ProjetInterop/MyJavaProject/hand.jpg";
+        String path ="MyJavaProject/hand.jpg";
        
         SimpleResultSet rs = new SimpleResultSet();
         
