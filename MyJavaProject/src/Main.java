@@ -131,7 +131,7 @@ public class Main {
                         "g = CAST(((r * 0.3 + g * 0.59 + b * 0.11) / 3) AS INT), " +
                         "b = CAST(((r * 0.3 + g * 0.59 + b * 0.11) / 3) AS INT)");
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
