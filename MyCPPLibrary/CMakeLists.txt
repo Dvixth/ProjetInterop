@@ -4,6 +4,8 @@ project(mylibrary)
 
 find_package(JNI REQUIRED)
 
+include_directories("/usr/include")
+
 add_library(mylibrary SHARED libmain.cpp)
 target_compile_features(mylibrary PUBLIC cxx_std_11)
 target_link_libraries(mylibrary ${JNI_LIBRARIES})

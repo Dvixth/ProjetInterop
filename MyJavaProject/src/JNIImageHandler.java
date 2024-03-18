@@ -1,12 +1,8 @@
 public class JNIImageHandler {
-
-    public static native void sauveImage(String tableName, String filePath);
+    public static native void sauveImage(int[] x, int[] y, int[] r, int[] g, int[] b, int width, int height,String filepath);
 
     static {
-        System.loadLibrary("ImageHandler");
+        System.load("/home/smail/Bureau/ProjetInterop/build/libmylibrary.so");
     }
-
-    public static void saveImage(String tableName, String filePath) {
-        sauveImage(tableName, filePath);
-    }
+    
 }
